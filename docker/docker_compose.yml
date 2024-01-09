@@ -10,11 +10,11 @@ services:
     hostname: spendsenseapi
     restart: on-failure
     volumes:
-      - ../:/server
+      - ../:/app
     ports:
       - 8506:80
     networks:
-      sependsenseapi:
+      spendsense:
         ipv4_address: 172.11.0.2
 
   postgresdb:
@@ -23,16 +23,13 @@ services:
     hostname: spendsensedb
     restart: on-failure
     ports:
-      - 5432:5432
+      - 5434:5432
     volumes:
       - ../db:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_PASSWORD=5pend5en5eapi
-      - POSTGRES_USER=spendsense_admin
-      - POSTGRES_DB=spendsense_tb
+    env_file: ../.env
     networks:
-      sependsenseapi:
-        ipv4_address: 172.11.0.2
+      spendsense:
+        ipv4_address: 172.11.0.3
 
 networks:
   spendsense:
