@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  server:
+    image: spendsenseapi:latest
+    build:
+      context: ../
+      dockerfile: docker/dev.Dockerfile
+    container_name: spendsenseapi
+    hostname: spendsenseapi
+    restart: on-failure
+    volumes:
+      - ../:/server
+    ports:
+      - 8506:80
+    networks:
+      sependsenseapi:
+        ipv4_address: 172.11.0.2
+
+  postgresdb:
+    image: postgres:15-alpine
+    container_name: spendsensedb
+    hostname: spendsensedb
+    restart: on-failure
+    ports:
+      - 5432:5432
+    volumes:
+      - ../db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=5pend5en5eapi
+      - POSTGRES_USER=spendsense_admin
+      - POSTGRES_DB=spendsense_tb
+    networks:
+      sependsenseapi:
+        ipv4_address: 172.11.0.2
+
+networks:
+  spendsense:
+    ipam:
+      config:
+        - subnet: 172.11.0.0/16
+          ip_range: 172.11.5.0/24
+          gateway: 172.11.0.1
